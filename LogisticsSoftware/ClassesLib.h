@@ -14,7 +14,7 @@ using namespace std;
 class PersonClass
  {
 private:
- string name,phone,address,amka,b_account;
+ string fname,lname,phone,address,amka,b_account;
  int age,v_hour,s_hour;
  double rate;
  string myConvert(int x)
@@ -28,10 +28,11 @@ public:
  int c_age;
  void setFields(int);
  string getFields();
- string getName();
+ string getFName();
+ string getLName();
  string getPhone();
  int getAge();
- void setName(string);
+ void setName(string,string);
  void setPhone(string);
  void setAge(int);
  };

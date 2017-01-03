@@ -9,6 +9,13 @@
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
+      <logicalFolder name="DataStorage" displayName="DataStorage" projectFiles="true">
+        <itemPath>DataStorage/Employee.xml</itemPath>
+        <itemPath>DataStorage/Finance.xml</itemPath>
+        <itemPath>DataStorage/Order.xml</itemPath>
+        <itemPath>DataStorage/Vehicle.xml</itemPath>
+        <itemPath>DataStorage/Warehouse.xml</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
@@ -28,6 +35,9 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>DataStorage</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Debug" type="1">
@@ -44,6 +54,16 @@
       <item path="ClassesLib.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ClassesLib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="DataStorage/Employee.xml" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="DataStorage/Finance.xml" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="DataStorage/Order.xml" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="DataStorage/Vehicle.xml" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="DataStorage/Warehouse.xml" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -72,6 +92,16 @@
       <item path="ClassesLib.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ClassesLib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="DataStorage/Employee.xml" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="DataStorage/Finance.xml" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="DataStorage/Order.xml" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="DataStorage/Vehicle.xml" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="DataStorage/Warehouse.xml" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Main.cpp" ex="false" tool="1" flavor2="0">
       </item>

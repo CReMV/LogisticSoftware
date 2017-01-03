@@ -25,6 +25,7 @@ void PersonClass::setFields(int k)
    fi=0;
    }
   }
+ fname=f_name;
  cout<<"Give the last name of the person: ";
  cin>>l_name;
  cin.clear();
@@ -45,7 +46,7 @@ void PersonClass::setFields(int k)
    li=0;
    }
   }
- name=f_name+" "+l_name;
+ lname=l_name;
  cout<<"Give the age of the person: ";
  cin>>c_age;
  cin.clear();
@@ -82,12 +83,13 @@ void PersonClass::setFields(int k)
  }
 string PersonClass::getFields()
  {
- cout<<"Full Name: "+name+", Age: "+myConvert(age)+", Phone: +30"+phone;
+ cout<<"Full Name: "+fname+" "+lname+", Age: "+myConvert(age)+", Phone: +30"+phone;
  return "";
  }
-void PersonClass::setName(string x)
+void PersonClass::setName(string x,string y)
  {
- name=x;
+ fname=x;
+ lname=y;
  }
 void PersonClass::setPhone(string x)
  {
@@ -97,9 +99,13 @@ void PersonClass::setAge(int x)
  {
  age=x;
  }
-string PersonClass::getName()
+string PersonClass::getFName()
  {
- return name;
+ return fname;
+ }
+string PersonClass::getLName()
+ {
+ return lname;
  }
 string PersonClass::getPhone()
  {
