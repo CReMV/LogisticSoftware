@@ -7,6 +7,7 @@ vector<WareHouseClass>whc;
 vector<FinanceClass>fc;
 vector<VehicleClass>vc;
 vector<OrderClass>oc;
+vector<int>pfound;
 //Main Menu
 int main(int argc,char *argv[])
  {
@@ -109,16 +110,15 @@ void personmenu(void)
    cin.clear();
    cin.ignore(256,'\n');
    }
+  //Register Employee
   if(choice==1)
    {
    bool rclose=false;
    do
     {
     char exit;
-    cout<<"Fill the employee info below!"<<'\n';
-    pc.resize(pcount+1);
-    pc[pcount].setFields(pcount);
-    pcount++;
+    void RegisterEmployee();
+    RegisterEmployee();
     cout<<"Do you want to add another employee?[Y/N]:";
     cin>>exit;
     cin.clear();
@@ -136,300 +136,250 @@ void personmenu(void)
      {
      rclose=true;
      }
-    else if(exit=='Y'||exit=='y')
+    else
      {
      rclose=false;
      }
     }
-   while(rclose=false);
+   while(rclose==false);
    }
+   //Search Employee
   else if(choice==2)
    {
    bool sclose=false;
+   char exit;
    do
     {
-    bool found=false;
-    string fname;
-    //If check in order to ensure no errors occur when there are no employees
-    if(pcount>0)
-     {
-     //Vector that saves the index of the found employees
-     vector<int>pfound;
-     cout<<"Give the first,last name or part of the name of the employees you want to find: ";
-     cin>>fname;
-     //Here I use the Boyer-Moore search algorithm,basically the search info we gave is compared to a substring of the full name
-     //That is the same size as the info we provided in terms of characters, after that we move it till it is compared with the last
-     //substring that it is possible to create from the name
-     for(int i=0;i<pcount;i++)
-      {
-      //We get the name of the employee we want to find
-      string sfname,slname;
-      bool ffound=false,lfound=false;
-      sfname=pc[i].getFName();
-      slname=pc[i].getLName();
-      //Since we want the substring to be the same size us our info we only go up to the max string size - the size of the info provided
-      //That way we got the last characters we need for full sized substring since there will be leftover characters
-      for(int j=0;j<sfname.size()-fname.size()+1;j++)
-       {
-       //Now we check from the character position we are in plus with the same number of characters the info have
-       if(fname==sfname.substr(j,j+fname.size()-1))
-	{
-	//We raise the found boolean flags
-	ffound=true;
-	}
-       }
-      for(int j=0;j<slname.size()-fname.size()+1;j++)
-       {
-       //Now we check from the character position we are in plus with the same number of characters the info have
-       if(fname==slname.substr(j,j+fname.size()-1))
-	{
-	//We raise the found boolean flags
-	lfound=true;
-	}
-       }
-      if(ffound==true||lfound==true)
-       {
-       found=true;
-       //After an employee is found it is added to the index list we made before to store our found employees compactly
-       pfound.push_back(i);
-       }
-      }
-     //Since we have found our employees we go to the option of if we want to change their info or delete them after their info
-     //Have been displayed one after another
-     if(found==true)
-      {
-      cout<<"Employee(s) found!"<<'\n';
-      //We use the iterator to get from the 1st index position of found employees in sequential order as they have been found
-      //To the next employee and so on till we go through them all
-      for(vector<int>::iterator it=pfound.begin();it!=pfound.end();it++)
-       {
-       char fchoice;
-       //By using the special symbol * we get the content of the memory block that the iterator points to since an iterator
-       //Basically works like a memory pointer, we do that because pfound can't be used itself as the employee vector's index
-       int pos=pfound[*it];
-       //We use the PersonClass function getFields that prints all the info of the object on the screen
-       cout<<pc[pos].getFields()<<'\n';
-       //Modification Verification
-       cout<<"Do you want to modify this entry?[Y/N]:";
-       cin>>fchoice;
-       //Sanity Control
-       while(fchoice!='Y'&&fchoice!='y'&&fchoice!='N'&&fchoice!='n')
-	{
-	cout<<"Do you want to modify this entry?[Y/N]:";
-	cin>>fchoice;
-	}
-       if(fchoice=='Y'||fchoice=='y')
-	{
-	//The modification choices provided to the user
-	int mchoice=0;
-	cout<<"Choose the modification you want to make:"<<'\n';
-	cout<<"1.Delete"<<'\n';
-	cout<<"2.Edit"<<'\n';
-	cout<<"3.Exit"<<'\n';
-	cout<<"Select:";
-	cin>>mchoice;
-	//Sanity Control
-	while(mchoice!=1&&mchoice!=2&&mchoice!=3)
-	 {
-	 cout<<"Invalid Selection!"<<'\n';
-	 cout<<"Choose the modification you want to make:"<<'\n';
-	 cout<<"1.Delete"<<'\n';
-	 cout<<"2.Edit"<<'\n';
-	 cout<<"3.Exit"<<'\n';
-	 cout<<"Select:";
-	 cin>>mchoice;
-	 }
-	//Delete Employee
-	if(mchoice==1)
-	 {
-	 //Since after deleting an employee we no longer need the last element of the vector that includes a now empty employee card
-	 //We only go up to the second from the end position that is pcount(The total number of employees) - 1 and start from the employee
-	 //We are deleting
-	 for(int i=pfound[*it];i<pcount-1;i++)
-	  {
-	  string fname,lname,phone;
-	  int age;
-	  //1st we get the info from the next employee and transfer it to the position we are removing an employee from
-	  fname=pc[pfound[*it+1]].getFName();
-	  lname=pc[pfound[*it+1]].getLName();
-	  phone=pc[pfound[*it+1]].getPhone();
-	  age=pc[pfound[*it+1]].getAge();
-	  //And set it as the deleted employee's new info to replace it with the next one
-	  pc[pfound[*it]].setName(fname,lname);
-	  pc[pfound[*it]].setPhone(phone);
-	  pc[pfound[*it]].setAge(age);
-	  //After that we remove the position from the found vector and move the vector elements one position backwards in line
-	  for(vector<int>::iterator mit=it+1;mit!=pfound.end();mit++)
-	   {
-	   pfound[*mit]=pfound[*mit+1];
-	   }
-	  //Then we delete the last element since it is unneeded
-	  pfound.erase(pfound.end()-1);
-	  }
-	 //Then we delete the last element of the employees vector since it is now a useless duplicate
-	 pc.erase(pc.end()-1);
-	 //We reduce the max amount of employees by one
-	 pcount--;
-	 }
-	else if(mchoice==2)
-	 {
-	 string name,fname,lname,phone;
-	 int age;
-	 char echoice;
-	 //Extracts the info of the employee so they can be left intact from changes later on
-	 name=pc[pfound[*it]].getFName();
-	 phone=pc[pfound[*it]].getPhone();
-	 age=pc[pfound[*it]].getAge();
-	 //Name Change
-	 cout<<"Do you want to change the name?[Y/N]:";
-	 cin>>echoice;
-	 cin.clear();
-	 cin.ignore(256,'\n');
-	 //Sanity Control
-	 while(echoice!='Y'&&echoice!='y'&&echoice!='N'&&echoice!='n')
-	  {
-	  cout<<"Do you want to change the name?[Y/N]:";
-	  cin>>echoice;
-	  }
-	 if(echoice=='Y'||echoice=='y')
-	  {
-	  cout<<"Give the first name of the person: ";
-	  cin>>fname;
-	  cin.clear();
-	  cin.ignore();
-	  int fi=0;
-	  //Sanity Control: Checks the whole string for numerical/special characters and a maximum size of 20 and minimum of 2 so names only include letters
-	  while(fi<fname.size())
-	   {
-	   //Basically we only go forward in the loop if no illegal character is found in the string till this point
-	   if((fname[fi]>='A'&&fname[fi]<='Z')||(fname[fi]>='a'&&fname[fi]<='z')&&fname.size()<20&&fname.size()>2)
-	    {
-	    fi++;
-	    }
-	    //If one is found the check is reset
-	    //We use the same algorithm for the last name and phone as well
-	   else
-	    {
-	    cout<<"The first name should be between 1-20 characters long and only have Latin characters!"<<'\n'<<"Give the first name of the person: ";
-	    cin>>fname;
-	    cin.clear();
-	    cin.ignore();
-	    fi=0;
-	    }
-	   }
-	  cout<<"Give the last name of the person: ";
-	  cin>>lname;
-	  cin.clear();
-	  cin.ignore();
-	  int li=0;
-	  //Sanity Control: Checks the whole string for numerical/special characters and a maximum size of 20 and minimum of 2 so names only include letters
-	  while(li<lname.size())
-	   {
-	   if((lname[li]>='A'&&lname[li]<='Z')||(lname[li]>='a'&&lname[li]<='z')&&lname.size()<20&&lname.size()>2)
-	    {
-	    li++;
-	    }
-	   else
-	    {
-	    cout<<"The last name should be between 1-20 characters long and only have Latin characters!"<<'\n'<<"Give the last name of the person: ";
-	    cin>>lname;
-	    cin.clear();
-	    cin.ignore();
-	    li=0;
-	    }
-	   }
-	  pc[pfound[*it]].setName(fname,lname);
-	  }
-	 //Phone Change
-	 cout<<"Do you want to change the phone?[Y/N]:";
-	 cin>>echoice;
-	 cin.clear();
-	 cin.ignore(256,'\n');
-	 //Sanity Control
-	 while(echoice!='Y'&&echoice!='y'&&echoice!='N'&&echoice!='n')
-	  {
-	  cout<<"Do you want to change the phone?[Y/N]:";
-	  cin>>echoice;
-	  }
-	 if(echoice=='Y'||echoice=='y')
-	  {
-	  cout<<"Give the phone of the person: ";
-	  cin>>phone;
-	  cin.clear();
-	  cin.ignore();
-	  int pi=0;
-	  //Since the phone is a string in order to have the country code as well we need a check to ensure only numeric characters are included
-	  while(pi<phone.size())
-	   {
-	   if(phone[pi]>='0'&&phone[pi]<='9'&&phone.size()==10)
-	    {
-	    pi++;
-	    }
-	   else
-	    {
-	    cout<<"The phone should only be numbers and 10 digits long!"<<'\n'<<"Give the phone of the person: ";
-	    cin>>phone;
-	    cin.clear();
-	    cin.ignore();
-	    pi=0;
-	    }
-	   }
-	  pc[pfound[*it]].setPhone(phone);
-	  //Age Change
-	  cout<<"Do you want to change the age?[Y/N]:";
-	  cin>>echoice;
-	  cin.clear();
-	  cin.ignore(256,'\n');
-	  while(echoice!='Y'&&echoice!='y'&&echoice!='N'&&echoice!='n')
-	   {
-	   cout<<"Do you want to change the age?[Y/N]:";
-	   cin>>echoice;
-	   }
-	  if(echoice=='Y'||echoice=='y')
-	   {
-	   cout<<"Give the age of the person: ";
-	   cin>>age;
-	   cin.clear();
-	   cin.ignore();
-	   while(age<18||age>60)
-	    {
-	    cout<<"The age should be between 18-60!"<<'\n'<<"Give the age of the person: ";
-	    cin >> age;
-	    cin.clear();
-	    cin.ignore();
-	    }
-	   }
-	  pc[pfound[*it]].setAge(age);
-	  }
-	 }
-	}
-       else
-	{
-	sclose=true;
-	}
-       }
-      }
-     else if(found==false)
-      {
-      cout<<"No employees found!"<<'\n';
-      }
-     }
-     //If no employees are registered it exits here after turning the loop exit flag to true
-    else
-     {
-     cout<<"No employees!"<<'\n';
-     sclose=true;
-     }
+    int SearchEmployee();
+    int found;
+    SearchEmployee();
     }
    while(sclose=false);
    }
    //We go to the next employee or exit the search function if no others are in line by changing the exit flag to true
-  else if(choice=3)
+  else if(choice==3)
    {
    close=true;
    }
   }
  while(close=false);
+ }
+//Register Employee
+void RegisterEmployee()
+ {
+ char exit;
+ cout<<"Fill the employee info below!"<<'\n';
+ pc.resize(pcount+1);
+ pc[pcount].setFields(pcount);
+ pcount++;
+ }
+//Search Employee
+int SearchEmployee()
+ {
+ bool sclose=false;
+ int sfound=0;
+ do
+  {
+  string fstring;
+  for(vector<PersonClass>::iterator it=pc.begin();it!=pc.end();it++)
+   {
+   auto pos=distance(pc.begin(),it);
+   string fname,lname;
+   fname=pc[pos].getFName();
+   lname=pc[pos].getLName();
+   for(int i=0;i!=fname.size()-fstring.size()-1;i++)
+    {
+    if(fstring==fname.substr(i,i+fstring.size()-1))
+     {
+     sfound=true;
+     }
+    }
+   for(int i=0;i!=lname.size()-fstring.size()-1;i++)
+    {
+    if(fstring==lname.substr(i,i+fstring.size()-1))
+     {
+     sfound=true;
+     }
+    }
+   if(sfound==true)
+    {
+    pfound.push_back(pos);
+    sclose=true;
+    }
+   else
+    {
+    cout<<"No employees Found!"<<'\n';
+    sclose=true;
+    }
+   }
+  }
+ while(sclose=false);
+ return sfound;
+ }
+void SearchResults()
+ {
+ string select;
+ for(vector<int>::iterator it=pfound.begin();it!=pfound.end();it++)
+  {
+  auto position=distance(pfound.begin(),it);
+  int sel=0;
+  cout<<pc[pfound[position]].getFields()<<'\n';
+  cout<<"Do you want to modify this entry?[Y/N/Exit]:";
+  cin>>select;
+  cin.clear();
+  cin.ignore(256,'\n');
+  do
+   {
+   cout<<"Do you want to modify this entry?[Y/N/Exit]:";
+   cin>>select;
+   cin.clear();
+   cin.ignore(256,'\n');
+   }
+  while(select!="Y"||select!="y"||select!="N"||select!="n");
+  if(select=="N"||select=="n")
+   {
+   continue;
+   }
+  cout<<"Select Modification:"<<'\n';
+  cout<<"1.Delete"<<'\n';
+  cout<<"2.Modify"<<'\n';
+  do
+   {
+   cout<<"Invalid Selection!"<<'\n';
+   cout<<"Select Modification:"<<'\n';
+   cout<<"1.Delete"<<'\n';
+   cout<<"2.Modify"<<'\n';
+   }
+  while(sel<1||sel>3);
+  if(sel==1)
+   {
+   char ssel;
+   cout<<"This action can not be reversed!Do you want to continue?[Y/N]";
+   cin>>ssel;
+   cin.clear();
+   cin.ignore(256,'\n');
+   do
+    {
+    cout<<"This selection is invalid!"<<'\n';
+    cout<<"This action can not be reversed!Do you want to continue?[Y/N]";
+    cin>>ssel;
+    cin.clear();
+    cin.ignore(256,'\n');
+    }
+   while(ssel!='Y'||ssel!='y'||ssel!='N'||ssel!='n');
+   if(ssel=='Y'||ssel=='y')
+    {
+    string fname,lname,phone;
+    int age;
+    for(vector<PersonClass>::iterator k=pc.begin();k!=pc.end();k++)
+     {
+     auto pos=distance(pc.begin(),k);
+     if(pos>=position)
+      {
+      pc[pos]=pc[pos+1];
+      }
+     }
+    pc.erase(pc.end()-1);
+    pcount--;
+    }
+   }
+  else if(sel==2)
+   {
+   char ssel;
+   cout<<"This action can not be reversed!Do you want to continue?[Y/N]";
+   cin>>ssel;
+   cin.clear();
+   cin.ignore(256,'\n');
+   do
+    {
+    cout<<"This selection is invalid!"<<'\n';
+    cout<<"This action can not be reversed!Do you want to continue?[Y/N]:";
+    cin>>ssel;
+    cin.clear();
+    cin.ignore(256,'\n');
+    }
+   while(ssel!='Y'||ssel!='y'||ssel!='N'||ssel!='n');
+   string fname;
+   cout<<"Give the first name of the person: ";
+   cin>>fname;
+   cin.clear();
+   cin.ignore();
+   int fi=0;
+   while(fi<fname.size())
+    {
+    if((fname[fi]>='A'&&fname[fi]<='Z')||(fname[fi]>='a'&&fname[fi]<='z')&&fname.size()<20&&fname.size()>2)
+     {
+     fi++;
+     }
+    else
+     {
+     cout<<"The first name should be between 1-20 characters long and only have Latin characters!"<<'\n'<<"Give the first name of the person: ";
+     cin>>fname;
+     cin.clear();
+     cin.ignore();
+     fi=0;
+     }
+    }
+   string lname;
+   cout<<"Give the last name of the person: ";
+   cin>>lname;
+   cin.clear();
+   cin.ignore();
+   int li=0;
+   while(li<lname.size())
+    {
+    if((lname[li]>='A'&&lname[li]<='Z')||(lname[li]>='a'&&lname[li]<='z')&&lname.size()<20&&lname.size()>2)
+     {
+     li++;
+     }
+    else
+     {
+     cout<<"The last name should be between 1-20 characters long and only have Latin characters!"<<'\n'<<"Give the last name of the person: ";
+     cin>>lname;
+     cin.clear();
+     cin.ignore();
+     li=0;
+     }
+    }
+   pc[position].setName(fname,lname);
+   int age;
+   cout<<"Give the age of the person: ";
+   cin>>age;
+   cin.clear();
+   cin.ignore();
+   while(age<18||age>60)
+    {
+    cout<<"The age should be between 18-60!"<<'\n'<<"Give the age of the person: ";
+    cin >> age;
+    cin.clear();
+    cin.ignore();
+    }
+   pc[position].setAge(age);
+   string phone;
+   cout<<"Give the phone of the person: ";
+   cin>>phone;
+   cin.clear();
+   cin.ignore();
+   int pi=0;
+   while(pi<phone.size())
+    {
+    if(phone[pi]>='0'&&phone[pi]<='9'&&phone.size()==10)
+     {
+     pi++;
+     }
+    else
+     {
+     cout<<"The phone should only be numbers and 10 digits long!"<<'\n'<<"Give the phone of the person: ";
+     cin>>phone;
+     cin.clear();
+     cin.ignore();
+     pi=0;
+     }
+    }
+   pc[position].setPhone(phone);
+   }
+  }
+ pfound.clear();
  }
 //Orders Management Menu
 void ordermenu()
